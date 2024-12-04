@@ -3,36 +3,32 @@ import http from "http";
 import { Server } from "socket.io";
 import path from "path";
 
-// Initialize Express and the server
+const users: { [key: string]: string } = {};
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Serve static files (like CSS, JS, images) from the "public" directory
 app.use(express.static(path.join(__dirname, "..", "public")));
 
-// Serve a basic HTML file
 app.get("/", (_req, res) => {
   res.sendFile(path.join(__dirname, "..", "public"));
 });
 
-// Listen for client connections
 io.on("connection", (socket) => {
-  console.log("A user connected");
-
-  // Listen for chat messages
-  socket.on("chat message", (msg) => {
-    console.log("Message: " + msg);
-    io.emit("chat message", msg); // Broadcast message to everyone
+  socket.on("new-user", (username: string) => {
+    users[socket.id] = username;
+    socket.broadcast.emit("user-connected", username);
   });
 
-  // Handle user disconnect
+  socket.on("send-chat-message", (message) => {
+    socket.broadcast.emit("chat-message", { user: users[socket.id], message });
+  });
+
   socket.on("disconnect", () => {
-    console.log("A user disconnected");
+    socket.broadcast.emit("user-disconnected", users[socket.id]);
+    delete users[socket.id];
   });
 });
 
-// Start the server
-server.listen(3000, () => {
-  console.log("Server listening on http://localhost:3000");
-});
+server.listen(3000, () => console.log("Server listening on port 3000..."));
