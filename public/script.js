@@ -4,18 +4,17 @@ const messages = document.getElementById("messages");
 const form = document.getElementById("form");
 const input = document.getElementById("input");
 
-const userName = prompt("What is your name?") || "Guest";
+const username = prompt("What is your name?") || "Guest";
 
 appendMessage("You joined!");
-socket.emit("new-user", userName);
+socket.emit("new-user", username);
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  if (input.value) {
-    socket.emit("send-chat-message", input.value);
-    appendMessage(`You: ${input.value}`);
-    input.value = "";
-  }
+
+  socket.emit("send-chat-message", input.value);
+  appendMessage(`You: ${input.value}`);
+  input.value = "";
 });
 
 socket.on("chat-message", (data) => {
