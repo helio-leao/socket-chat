@@ -1,14 +1,15 @@
 const socket = io();
 
+const userForm = document.getElementById("user-form");
+const userInput = document.getElementById("user-input");
+const roomInput = document.getElementById("room-input");
+
 const messages = document.getElementById("messages");
-const form = document.getElementById("form");
-const input = document.getElementById("input");
+const messageForm = document.getElementById("message-form");
+const messageInput = document.getElementById("message-input");
 
-const user = prompt("What is your name?") || "Guest";
-const room = prompt("Room name...");
-
-appendMessage("You joined!");
-socket.emit("new-user", { user, room });
+let user = null;
+let room = null;
 
 socket.on("chat-message", (data) => {
   appendMessage(`${data.user}: ${data.message}`);
@@ -22,19 +23,33 @@ socket.on("user-disconnected", (user) => {
   appendMessage(`${user} disconnected`);
 });
 
-form.addEventListener("submit", (e) => {
+messageForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  const message = input.value;
+  const message = messageInput.value;
+
+  if (!user || !room || !message) return;
 
   socket.emit("send-chat-message", { room, message });
   appendMessage(`You: ${message}`);
-  input.value = "";
+  messageInput.value = "";
+});
+
+userForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  user = userInput.value.trim();
+  room = roomInput.value.trim();
+
+  if (!user || !room) return;
+
+  socket.emit("new-user", { user, room });
+  appendMessage("You joined!");
 });
 
 function appendMessage(message) {
   const item = document.createElement("li");
   item.textContent = message;
   messages.appendChild(item);
-  window.scrollTo(0, document.body.scrollHeight);
+  messages.scrollTop = messages.scrollHeight;
 }

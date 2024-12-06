@@ -9,10 +9,36 @@
     <script defer src="script.js"></script>
   </head>
   <body>
-    <ul id="messages"></ul>
-    <form id="form" action="">
-      <input id="input" autocomplete="off" />
-      <button>Send</button>
-    </form>
+    <div id="app">
+      <form id="user-form" class="form">
+        <input
+          id="user-input"
+          class="input"
+          maxlength="8"
+          required
+          placeholder="Enter your name"
+          autocomplete="off"
+        />
+        <input
+          id="room-input"
+          class="input"
+          maxlength="8"
+          required
+          placeholder="Enter the room"
+          autocomplete="off"
+        />
+        <button class="button">Enter</button>
+      </form>
+      <ul id="messages"></ul>
+      <form id="message-form" class="form">
+        <input
+          id="message-input"
+          class="input"
+          placeholder="Type your message"
+          autocomplete="off"
+        />
+        <button class="button">Send</button>
+      </form>
+    </div>
   </body>
 </html>
