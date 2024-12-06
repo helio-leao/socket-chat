@@ -17,6 +17,15 @@ app.get("/", (_req, res) => {
 
 io.on("connection", (socket) => {
   socket.on("new-user", (data: { user: string; room: string }) => {
+    // remove user from previous room
+    const prevRoom = getUserRoom(socket.id);
+
+    if (prevRoom) {
+      socket.leave(prevRoom);
+      removeUserFromRoom(socket.id, prevRoom);
+    }
+
+    // add user to new room
     const { user, room } = data;
 
     if (rooms[room] == null) {
@@ -38,24 +47,31 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    const userRooms = getUserRooms(socket.id);
+    const room = getUserRoom(socket.id);
 
-    userRooms.forEach((room) => {
-      socket.to(room).emit("user-disconnected", rooms[room].users[socket.id]);
-      delete rooms[room].users[socket.id];
-    });
+    if (!room) return;
+
+    socket.to(room).emit("user-disconnected", rooms[room].users[socket.id]);
+    removeUserFromRoom(socket.id, room);
   });
 });
 
-function getUserRooms(socketId: string) {
-  const userRooms = [];
-
+function getUserRoom(socketId: string) {
   for (let room in rooms) {
     if (rooms[room].users[socketId] != null) {
-      userRooms.push(room);
+      return room;
     }
   }
-  return userRooms;
+  return null;
+}
+
+function removeUserFromRoom(socketId: string, room: string) {
+  // remove user from room
+  delete rooms[room].users[socketId];
+  // remove room if empty
+  if (Object.keys(rooms[room].users).length === 0) {
+    delete rooms[room];
+  }
 }
 
 server.listen(3000, () => console.log("Server listening on port 3000..."));
