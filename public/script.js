@@ -4,7 +4,7 @@ const userForm = document.getElementById("user-form");
 const userInput = document.getElementById("user-input");
 const roomInput = document.getElementById("room-input");
 
-const messages = document.getElementById("messages");
+const messageList = document.getElementById("message-list");
 const messageForm = document.getElementById("message-form");
 const messageInput = document.getElementById("message-input");
 
@@ -49,7 +49,8 @@ userForm.addEventListener("submit", (e) => {
 
 function appendMessage(message) {
   const item = document.createElement("li");
+  item.id = "message";
   item.textContent = message;
-  messages.appendChild(item);
-  messages.scrollTop = messages.scrollHeight;
+  messageList.appendChild(item);
+  messageList.scrollTop = messageList.scrollHeight;
 }
