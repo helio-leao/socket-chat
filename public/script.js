@@ -33,6 +33,7 @@ messageForm.addEventListener("submit", (e) => {
   socket.emit("send-chat-message", { room, message });
   appendMessage(`You: ${message}`);
   messageInput.value = "";
+  messageInput.focus();
 });
 
 userForm.addEventListener("submit", (e) => {
