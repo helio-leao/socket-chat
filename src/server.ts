@@ -11,10 +11,6 @@ const io = new Server(server);
 
 app.use(express.static(path.join(__dirname, "..", "public")));
 
-app.get("/", (_req, res) => {
-  res.sendFile(path.join(__dirname, "..", "public"));
-});
-
 io.on("connection", (socket) => {
   socket.on("new-user", (data: { user: string; room: string }) => {
     // remove user from previous room
