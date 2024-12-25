@@ -17,7 +17,8 @@ This project implements a basic room chat using **Socket.io**.
 1. Clone the repository.
 2. Navigate to the project directory.
 3. Run `npm install` to install the dependencies.
-4. Run `npm run dev` to start the server.
+4. Run `npm run dev` to start the server.  
+   To use this command it's necessary to have the .env file in the root of the project. Optionally, you can add a custom `PORT` variable to it. If not defined, the application will run on port 3000.
 
 ---
 
