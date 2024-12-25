@@ -3,6 +3,8 @@ import http from "http";
 import { Server } from "socket.io";
 import path from "path";
 
+const PORT = process.env.PORT || 3000;
+
 const rooms: { [key: string]: { users: { [key: string]: string } } } = {};
 
 const app = express();
@@ -70,4 +72,4 @@ function removeUserFromRoom(socketId: string, room: string) {
   }
 }
 
-server.listen(3000, () => console.log("Server listening on port 3000..."));
+server.listen(PORT, () => console.log(`Server listening on port ${PORT}...`));
